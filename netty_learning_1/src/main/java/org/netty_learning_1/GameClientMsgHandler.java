@@ -8,27 +8,19 @@ import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import io.netty.util.CharsetUtil;
+import org.netty_learning_1.msg.GameMsgProtocol;
 
-public class GameMsgHandler extends SimpleChannelInboundHandler<Object> {
+public class GameClientMsgHandler extends SimpleChannelInboundHandler<Object> {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
+        GameMsgProtocol.UserEntryCmd userEntryCmd=GameMsgProtocol.UserEntryCmd.newBuilder().setUserId(1).setHeroAvatar("Hello").build();
+        ctx.writeAndFlush(userEntryCmd);
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Object msg) throws Exception {
          System.out.println("message: "+msg.toString());
-        ByteBuf in = (ByteBuf) msg;
-        System.out.println(in.toString(CharsetUtil.UTF_8));
-        ByteBuf resp= Unpooled.copiedBuffer("收到信息$".getBytes());
-        channelHandlerContext.writeAndFlush(resp);
-//        BinaryWebSocketFrame frame=(BinaryWebSocketFrame)o;
-//        ByteBuf byteBuf=frame.content();
-//        byte[] bytesArray=new byte[byteBuf.readableBytes()];
-//        byteBuf.readBytes(bytesArray);
-//        for(byte b:bytesArray){
-//            System.out.print(b);
-//        }
     }
 }
